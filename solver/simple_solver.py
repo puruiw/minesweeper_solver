@@ -1,8 +1,3 @@
-import time
-import numpy as np
-from game import Game
-
-
 class SimpleSolver:
     def __init__(self, game, debug=False):
         self.game = game
@@ -59,29 +54,3 @@ class SimpleSolver:
                 if self.game.get_state(x, y) == -2:
                     self.game.open(x, y)
                     return
-
-
-def benchmark(factory, loops=1000):
-    success = 0
-    start = time.time()
-    for i in range(loops):
-        game, solver = factory(False)
-        solver.solve()
-        if game.success():
-            success += 1
-        if (i + 1) % 10 == 0 or i == loops - 1:
-            print("%d games, %d success, %f success rate, %f seconds" % (
-                i + 1, success, success / (i + 1), time.time() - start))
-
-
-def try_one(factory):
-    game, solver = factory(True)
-    solver.solve()
-
-
-def simple_solver_factory(debug):
-    game = Game.expert()
-    return game, SimpleSolver(game, debug)
-
-if __name__ == r'__main__':
-    benchmark(simple_solver_factory())

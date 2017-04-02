@@ -2,8 +2,7 @@ import sys
 
 import numpy as np
 
-from game import Game
-from solver.simple_solver import SimpleSolver, try_one, benchmark
+from solver.simple_solver import SimpleSolver
 
 
 def range_intersection(range1, range2):
@@ -88,7 +87,7 @@ class SetSolver(SimpleSolver):
         while self.solve_sets(information):
             if self.clean_solved_sets(information):
                 return
-        #self.random_open(information)
+        # self.random_open(information)
         super().random_open()
 
     def random_open(self, information):
@@ -159,15 +158,3 @@ class SetSolver(SimpleSolver):
             for k in found:
                 del information[k]
             return True
-        return False
-
-
-def set_solver_factory(debug):
-    game = Game.expert()
-    return game, SetSolver(game, debug)
-
-
-if __name__ == r'__main__':
-    benchmark(set_solver_factory, 1000)
-    #try_one(set_solver_factory)
-    #Game.expert()._debug()
