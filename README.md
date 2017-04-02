@@ -8,4 +8,4 @@ Usage:
     
 For example:
 
-    python3 -m solver.run_solver 'set' 'simple'
+    python3 -m solver.run_solver 'set' 'beginner'
