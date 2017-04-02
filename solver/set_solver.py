@@ -1,3 +1,7 @@
+import sys
+
+import numpy as np
+
 from game import Game
 from solver.simple_solver import SimpleSolver, try_one, benchmark
 
@@ -84,7 +88,42 @@ class SetSolver(SimpleSolver):
         while self.solve_sets(information):
             if self.clean_solved_sets(information):
                 return
-        self.random_open()
+        #self.random_open(information)
+        super().random_open()
+
+    def random_open(self, information):
+        # try to find a set with lowest risk.
+        lowest_risk = 1
+        for k in information.keys():
+            risk = float(information[k][1]) / len(k)
+            if risk < lowest_risk:
+                lowest_risk = risk
+                best = k
+
+        mean_risk = (self.game.mines - self.game.marked) / (self.game.width * self.game.height - self.game.marked - self.game.opened)
+        if lowest_risk < mean_risk:
+            i = np.random.randint(0, len(best))
+            x, y = list(best)[i]
+            if self.game.get_state(x, y) == -2:
+                self.game.open(x, y)
+                return
+            else:
+                print("ALREADY OPENED? SHOULD NOT HAPPEN!", file=sys.stderr)
+        #super().random_open()
+        self.open_center()
+
+    # low performance
+    def open_center(self):
+        closest = self.game.width + self.game.height
+        for x in range(self.game.width):
+            for y in range(self.game.height):
+                state = self.game.get_state(x, y)
+                if state == -2:
+                    distance = abs(x - self.game.width / 2) + abs(y - self.game.height / 2)
+                    if distance < closest:
+                        closest = distance
+                        best = (x, y)
+        self.game.open(best[0], best[1])
 
     @staticmethod
     def solve_sets(information):
